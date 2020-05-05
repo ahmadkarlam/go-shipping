@@ -1,6 +1,6 @@
 ## Run project
 ```
-go run main.go
+go run cmd/http/main.go
 ```
 
 ## Run test
