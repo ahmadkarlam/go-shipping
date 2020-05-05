@@ -1,0 +1,4 @@
+development:
+  dialect: mysql
+  datasource: root:secret@/go_shipping?parseTime=true
+  dir: databases/migrations
