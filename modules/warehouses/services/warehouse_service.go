@@ -64,7 +64,9 @@ func (s *warehouseService) FindNearbyWarehouse(location dto.SendVaccineToLocatio
 	if warehouses[index].X == 0 {
 		return dto.SendingCost{}, errors.New("warehouse not found, out of stock")
 	}
-	// TODO: update to database
+	if err := s.repository.DecreaseStock(warehouses[index]); err != nil {
+		return dto.SendingCost{}, err
+	}
 	warehouses[index].Stock -= 1
 
 	var warehouse dto.Warehouse

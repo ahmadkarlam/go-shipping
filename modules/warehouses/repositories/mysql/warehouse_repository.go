@@ -1,68 +1,31 @@
 package mysql
 
 import (
+	"github.com/jinzhu/gorm"
+
 	"github.com/ahmadkarlam/go-shipping/modules/warehouses/models"
 	"github.com/ahmadkarlam/go-shipping/modules/warehouses/repositories"
 )
 
-var WAREHOUSES = []models.Warehouse{
-	{
-		Code:  "A",
-		Stock: 10,
-		X:     5,
-		Y:     18,
-	},
-	{
-		Code:  "B",
-		Stock: 10,
-		X:     19,
-		Y:     17,
-	},
-	{
-		Code:  "C",
-		Stock: 10,
-		X:     10,
-		Y:     18,
-	},
-	{
-		Code:  "D",
-		Stock: 10,
-		X:     21,
-		Y:     14,
-	},
-	{
-		Code:  "E",
-		Stock: 10,
-		X:     8,
-		Y:     10,
-	},
-	{
-		Code:  "F",
-		Stock: 10,
-		X:     16,
-		Y:     9,
-	},
-	{
-		Code:  "G",
-		Stock: 10,
-		X:     11,
-		Y:     5,
-	},
-	{
-		Code:  "H",
-		Stock: 10,
-		X:     17,
-		Y:     4,
-	},
-}
-
 type WarehouseRepository struct {
+	db *gorm.DB
 }
 
-func NewWarehouseRepository() repositories.WarehouseRepository {
-	return &WarehouseRepository{}
+func NewWarehouseRepository(db *gorm.DB) repositories.WarehouseRepository {
+	return &WarehouseRepository{
+		db: db,
+	}
 }
 
 func (r *WarehouseRepository) GetAll() ([]models.Warehouse, error) {
-	return WAREHOUSES, nil
+	var warehouses []models.Warehouse
+	err := r.db.Find(&warehouses).Error
+
+	return warehouses, err
+}
+
+func (r *WarehouseRepository) DecreaseStock(warehouse models.Warehouse) error {
+	return r.db.Model(&warehouse).
+		UpdateColumn("stock", gorm.Expr("stock - ?", 1)).
+		Error
 }

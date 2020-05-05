@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `warehouses`
     x          INT,
     y          INT,
     created_at TIMESTAMP   NULL,
-    updated_at TIMESTAMP   NULL
+    updated_at TIMESTAMP   NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
 );
 
 -- +migrate Down
