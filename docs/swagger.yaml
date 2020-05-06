@@ -1,0 +1,57 @@
+definitions:
+  dto.SendVaccineToLocationRequest:
+    properties:
+      x:
+        type: integer
+      "y":
+        type: integer
+    required:
+    - x
+    - "y"
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /warehouse:
+    get:
+      consumes:
+      - application/json
+      description: get all data warehouse
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: get all warehouse
+  /warehouse/send-vaccine:
+    post:
+      consumes:
+      - application/json
+      description: send vaccine to given location
+      parameters:
+      - description: Request Body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.SendVaccineToLocationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: send vaccine
+swagger: "2.0"
