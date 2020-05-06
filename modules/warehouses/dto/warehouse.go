@@ -16,6 +16,6 @@ type SendingCost struct {
 }
 
 type SendVaccineToLocationRequest struct {
-	X int `json:"x"`
-	Y int `json:"y"`
+	X int `json:"x" binding:"min=0,max=25"`
+	Y int `json:"y" binding:"min=0,max=25"`
 }
