@@ -24,18 +24,18 @@ func (r *WarehouseRepository) GetAll() ([]models.Warehouse, error) {
 	return warehouses, err
 }
 
-func (r *WarehouseRepository) DecreaseStock(warehouse *models.Warehouse) error {
+func (r *WarehouseRepository) DecreaseStock(warehouse models.Warehouse) (models.Warehouse, error) {
 	err := r.db.Model(warehouse).
 		UpdateColumn("stock", gorm.Expr("stock - ?", 1)).
 		Error
 
 	if err != nil {
-		return err
+		return warehouse, err
 	}
 
 	warehouse.Stock -= 1
 
-	return nil
+	return warehouse, nil
 }
 
 func (r *WarehouseRepository) FindById(id uint) (models.Warehouse, error) {

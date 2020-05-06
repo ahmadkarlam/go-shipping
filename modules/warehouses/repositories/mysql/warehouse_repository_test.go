@@ -57,18 +57,19 @@ func TestWarehouseRepository_GetAll(t *testing.T) {
 
 func TestWarehouseRepository_DecreaseStock(t *testing.T) {
 	type args struct {
-		warehouse *models.Warehouse
+		warehouse models.Warehouse
 	}
 	query := "UPDATE `warehouses` (.+)"
 	tests := []struct {
 		name          string
 		args          args
 		configureMock func(mock sqlmock.Sqlmock, args args)
+		want          models.Warehouse
 		wantErr       bool
 	}{
 		{
 			name: "Success decrease stock vaccine",
-			args: args{warehouse: &models.Warehouse{
+			args: args{warehouse: models.Warehouse{
 				Model: gorm.Model{ID: 1},
 				Stock: 10,
 			}},
@@ -76,6 +77,10 @@ func TestWarehouseRepository_DecreaseStock(t *testing.T) {
 				mock.ExpectBegin()
 				mock.ExpectExec(query).WithArgs(1, args.warehouse.ID).WillReturnResult(sqlmock.NewResult(1, 1))
 				mock.ExpectCommit()
+			},
+			want: models.Warehouse{
+				Model: gorm.Model{ID: 1},
+				Stock: 9,
 			},
 			wantErr: false,
 		},
@@ -88,9 +93,15 @@ func TestWarehouseRepository_DecreaseStock(t *testing.T) {
 			r := &WarehouseRepository{
 				db: db,
 			}
-			if err := r.DecreaseStock(tt.args.warehouse); (err != nil) != tt.wantErr {
+			got, err := r.DecreaseStock(tt.args.warehouse)
+			if (err != nil) != tt.wantErr {
 				t.Errorf("DecreaseStock() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DecreaseStock() got = %v, want %v", got, tt.want)
+			}
+
 			if err := mock.ExpectationsWereMet(); err != nil {
 				t.Errorf("there were unfulfilled expectations: %s", err)
 			}

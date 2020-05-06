@@ -57,7 +57,8 @@ func (s *warehouseService) FindNearbyWarehouse(location dto.SendVaccineToLocatio
 	if warehouse.Stock == 0 {
 		return dto.SendingCost{}, errors.New("out of stock")
 	}
-	if err := s.repository.DecreaseStock(&warehouse); err != nil {
+	warehouse, err = s.repository.DecreaseStock(warehouse)
+	if err != nil {
 		return dto.SendingCost{}, err
 	}
 
