@@ -46,7 +46,22 @@ Run application with docker:
 ```
 docker-compose up
 ```
-Then you have to run migration script:
+Until terminal output like this:
+```
+go_shipping_app | [GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+go_shipping_app |
+go_shipping_app | [GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+go_shipping_app |  - using env: export GIN_MODE=release
+go_shipping_app |  - using code:        gin.SetMode(gin.ReleaseMode)
+go_shipping_app |
+go_shipping_app | [GIN-debug] GET    /warehouse                --> github.com/ahmadkarlam/go-shipping/modules/warehouses/handlers.(*WarehouseHandler).GetAll-fm (3 handlers)
+go_shipping_app | [GIN-debug] POST   /warehouse/send-vaccine   --> github.com/ahmadkarlam/go-shipping/modules/warehouses/handlers.(*WarehouseHandler).SendVaccineToLocation-fm (3 handlers)
+go_shipping_app | [GIN-debug] GET    /swagger/*any             --> github.com/swaggo/gin-swagger.CustomWrapHandler.func1 (3 handlers)
+go_shipping_app | [GIN-debug] Environment variable PORT is undefined. Using port :8080 by default
+go_shipping_app | [GIN-debug] Listening and serving HTTP on :8080
+```
+
+Then you have to run migration script in another terminal tab:
 ```
 docker-compose exec app go run cmd/cli/migrate.go
 ```
