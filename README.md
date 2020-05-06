@@ -42,8 +42,13 @@ table `warehouses`:
 
 
 # Run project
+Run application with docker:
 ```
 docker-compose up
+```
+Then you have to run migration script:
+```
+docker-compose exec app go run cmd/cli/migrate.go
 ```
 
 ## Run test

@@ -13,7 +13,7 @@ services:
     volumes:
       - .:/go/src/github.com/ahmadkarlam/go-shipping
     working_dir: /go/src/github.com/ahmadkarlam/go-shipping
-    command: bash -c "go run cmd/cli/migrate.go && go run cmd/http/main.go"
+    command: bash -c "go run cmd/http/main.go"
   database:
     image: mysql:5.7
     container_name: go_shipping_database

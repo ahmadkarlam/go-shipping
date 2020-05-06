@@ -2,8 +2,11 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 
 	"github.com/ahmadkarlam/go-shipping/common/resolver"
+	_ "github.com/ahmadkarlam/go-shipping/docs"
 	"github.com/ahmadkarlam/go-shipping/modules/warehouses/handlers"
 )
 
@@ -22,5 +25,7 @@ func serve() error {
 
 	r.GET("/warehouse", warehouseHandler.GetAll)
 	r.POST("/warehouse/send-vaccine", warehouseHandler.SendVaccineToLocation)
+	// Swagger documentation
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r.Run()
 }
