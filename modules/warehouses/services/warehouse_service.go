@@ -7,6 +7,7 @@ import (
 	"github.com/ahmadkarlam/go-shipping/common/constants"
 	"github.com/ahmadkarlam/go-shipping/common/helpers"
 	"github.com/ahmadkarlam/go-shipping/modules/warehouses/dto"
+	"github.com/ahmadkarlam/go-shipping/modules/warehouses/models"
 	"github.com/ahmadkarlam/go-shipping/modules/warehouses/repositories"
 
 	"github.com/jinzhu/copier"
@@ -47,30 +48,21 @@ func (s *warehouseService) FindNearbyWarehouse(location dto.SendVaccineToLocatio
 		return dto.SendingCost{}, nil
 	}
 
-	distance := math.MaxInt8
-	index := -1
-	for i, warehouse := range warehouses {
-		if warehouse.Stock == 0 {
-			continue
-		}
+	id, distance := s.findWarehouse(warehouses, location)
 
-		total := helpers.Abs(location.X-warehouse.X) + helpers.Abs(location.Y-warehouse.Y)
-		if distance > total {
-			distance = total
-			index = i
-		}
+	warehouse, err := s.repository.FindById(id)
+	if err != nil {
+		return dto.SendingCost{}, errors.New("warehouse not found")
 	}
-
-	if warehouses[index].X == 0 {
-		return dto.SendingCost{}, errors.New("warehouse not found, out of stock")
+	if warehouse.Stock == 0 {
+		return dto.SendingCost{}, errors.New("out of stock")
 	}
-	if err := s.repository.DecreaseStock(warehouses[index]); err != nil {
+	if err := s.repository.DecreaseStock(&warehouse); err != nil {
 		return dto.SendingCost{}, err
 	}
-	warehouses[index].Stock -= 1
 
-	var warehouse dto.Warehouse
-	if err := copier.Copy(&warehouse, &warehouses[index]); err != nil {
+	var warehouseDto dto.Warehouse
+	if err := copier.Copy(&warehouseDto, &warehouse); err != nil {
 		return dto.SendingCost{}, err
 	}
 
@@ -78,7 +70,7 @@ func (s *warehouseService) FindNearbyWarehouse(location dto.SendVaccineToLocatio
 	days := distance / 8
 	hours := distance % 8
 	sendingCost := dto.SendingCost{
-		From:     warehouse,
+		From:     warehouseDto,
 		Distance: distance,
 		Cost:     cost,
 		Day:      days,
@@ -86,4 +78,22 @@ func (s *warehouseService) FindNearbyWarehouse(location dto.SendVaccineToLocatio
 	}
 
 	return sendingCost, nil
+}
+
+func (s *warehouseService) findWarehouse(warehouses []models.Warehouse, location dto.SendVaccineToLocationRequest) (uint, int) {
+	distance := math.MaxInt8
+	var id uint
+	for _, warehouse := range warehouses {
+		if warehouse.Stock == 0 {
+			continue
+		}
+
+		total := helpers.Abs(location.X-warehouse.X) + helpers.Abs(location.Y-warehouse.Y)
+		if total < distance {
+			distance = total
+			id = warehouse.ID
+		}
+	}
+
+	return id, distance
 }
