@@ -1,4 +1,4 @@
-## Description
+# Description
 This application uses Domain Driven Design, the code is divided based on existing domains.
 There is only one doamin, namely the domain warehouse.
 This warehouse has a feature to display a list of warehouses (warehouse code, x and y locations and current stock).
@@ -8,7 +8,7 @@ There are two endpoints in this application:
 
 You can access the swagger documentation [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) to try it. 
 
-### Project structure
+# Project structure
 1. `/cmd`
     - `/common/cli`: action that is run on the CLI.
     - `/common/http`: run http server.
@@ -26,7 +26,7 @@ You can access the swagger documentation [http://localhost:8080/swagger/index.ht
     - `/modules/*/repositories`: communicate to ORM with models.
     - `/modules/*/services`: business logic happen here.
 
-## Database schema
+# Database schema
 In this application, only one table is used, namely:
 
 table `warehouses`:
@@ -41,7 +41,7 @@ table `warehouses`:
 
 
 
-## Run project
+# Run project
 ```
 docker-compose up
 ```
